@@ -1,0 +1,18 @@
+A simple and easy-to-use file/message sharing tool
+
+Usage: rdrop [options]
+
+Options:
+  -i <path>         Path of a single file to share
+  -I <path>         Path of a file whose content will be sent as plain text
+  -m <message>      Message content to send
+  -p <port>         Specify the server port (default: 1130)
+  -h, --help        Show this help message and exit
+
+Examples:
+  Share a file:         rdrop -i my_document.pdf
+  Send plain text:      rdrop -I my_note.txt
+  Send a message:       rdrop -m "Good morning!"
+  Share only a file:    rdrop my_document.pdf
+  Combined usage:       rdrop -i doc.pdf -I note.txt -m "Here are today's materials"
+  Specify port:         rdrop -i my_document.pdf -p 8080

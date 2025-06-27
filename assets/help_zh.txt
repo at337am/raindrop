@@ -1,0 +1,18 @@
+一个简单易用的文件/消息共享工具
+
+用法: rdrop [选项]
+
+选项:
+  -i <path>         要共享的单个文件路径
+  -I <path>         要作为纯文本发送的文件路径
+  -m <message>      要发送的消息内容
+  -p <port>         指定服务器运行的端口 (默认: 1130)
+  -h, --help        显示此帮助信息并退出
+
+示例:
+  共享文件:         rdrop -i my_document.pdf
+  发送纯文本内容:   rdrop -I my_note.txt
+  发送消息:         rdrop -m "早上好!"
+  仅共享文件:       rdrop my_document.pdf
+  组合使用:         rdrop -i doc.pdf -I note.txt -m "这是今天的资料"
+  指定端口:         rdrop -i my_document.pdf -p 8080
