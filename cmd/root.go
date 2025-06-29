@@ -1,4 +1,4 @@
-package main
+package cmd
 
 import (
 	"fmt"
@@ -12,7 +12,8 @@ import (
 	"raindrop/pkg/fmtcolor"
 )
 
-func main() {
+// Execute 程序的入口函数
+func Execute() {
 	// 1. 加载并校验配置
 	appCfg, err := config.ValidateAndLoadConfig()
 	if err != nil {
