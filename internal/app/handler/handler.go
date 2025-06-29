@@ -42,6 +42,6 @@ func (h *APIHandler) DownloadFile(c *gin.Context) {
 	}
 
 	// 直接使用服务中存储的绝对安全路径来提供文件
-	// 强制浏览器下载，而不是在浏览器中打开
+	// 强制浏览器下载, 而不是在浏览器中打开
 	c.FileAttachment(info.FilePath, info.FileName)
 }

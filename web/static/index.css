@@ -90,7 +90,7 @@ h1 span {
 /* 文件名称 */
 .file-name {
     font-size: 2rem;
-    /* 确保文本在一行显示，并隐藏溢出内容 */
+    /* 确保文本在一行显示, 并隐藏溢出内容 */
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

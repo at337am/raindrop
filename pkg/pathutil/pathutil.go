@@ -16,13 +16,13 @@ func IsValidFilePath(path string) error {
 		if os.IsNotExist(err) {
 			return fmt.Errorf("文件不存在: %q", path)
 		} else if os.IsPermission(err) {
-			return fmt.Errorf("权限不足，无法访问: %q", path)
+			return fmt.Errorf("权限不足, 无法访问: %q", path)
 		} else {
 			return fmt.Errorf("访问路径 %q 时发生未知错误: %w", path, err)
 		}
 	}
 	if info.IsDir() {
-		return fmt.Errorf("路径 %q 是一个目录，请提供文件路径", path)
+		return fmt.Errorf("路径 %q 是一个目录, 请提供文件路径", path)
 	}
 
 	return nil

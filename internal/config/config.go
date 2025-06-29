@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-// AppConfig 存储应用的配置信息，经过校验后的可靠数据
+// AppConfig 存储应用的配置信息, 经过校验后的可靠数据
 type AppConfig struct {
 	SharedFileAbsPath  string
 	Message            string
@@ -19,14 +19,14 @@ type AppConfig struct {
 	Port               string
 }
 
-// getLocaleLanguage 获取当前系统的语言环境，例如 "en" 或 "zh"
+// getLocaleLanguage 获取当前系统的语言环境, 例如 "en" 或 "zh"
 func getLocaleLanguage() string {
 	lang := os.Getenv("LANG")
 	if lang == "" {
 		lang = os.Getenv("LC_ALL")
 	}
 	if lang != "" {
-		// 提取主要语言部分，例如 "zh_CN.UTF-8" -> "zh"
+		// 提取主要语言部分, 例如 "zh_CN.UTF-8" -> "zh"
 		if idx := strings.Index(lang, "_"); idx != -1 {
 			return strings.ToLower(lang[:idx])
 		}
@@ -47,7 +47,7 @@ func getHelpContentByLocale() string {
 	case "en":
 		return assets.HelpEN
 	default:
-		// 如果没有对应的语言，默认使用英文
+		// 如果没有对应的语言, 默认使用英文
 		return assets.HelpEN
 	}
 }
@@ -70,10 +70,10 @@ func ValidateAndLoadConfig() (*AppConfig, error) {
 		message     string
 		port        string
 	)
-	flag.StringVar(&sharedFile, "i", "", "要共享的单个文件路径, 可选")
-	flag.StringVar(&contentFile, "I", "", "要作为纯文本发送的文件路径, 可选")
-	flag.StringVar(&message, "m", "", "要发送的消息内容, 可选")
-	flag.StringVar(&port, "p", "1130", "服务器运行的端口, 可选")
+	flag.StringVar(&sharedFile, "i", "", "要共享的单个文件路径")
+	flag.StringVar(&contentFile, "I", "", "要作为纯文本发送的文件路径")
+	flag.StringVar(&message, "m", "", "要发送的消息内容")
+	flag.StringVar(&port, "p", "1130", "指定服务器运行的端口")
 	flag.Parse()
 
 	// 处理非选项参数
@@ -88,15 +88,15 @@ func ValidateAndLoadConfig() (*AppConfig, error) {
 	}
 
 	if len(nonFlagArgs) == 1 {
-		// 如果用户已经通过 -i, -I, -m 指定了输入，则产生冲突
+		// 如果用户已经通过 -i, -I, -m 指定了输入, 则产生冲突
 		if sharedFile != "" || contentFile != "" || message != "" {
-			return nil, fmt.Errorf("不能同时使用选项 (-i, -I, -m) 和独立的非选项参数")
+			return nil, fmt.Errorf("不能同时使用选项 (-i, -I, -m) 和非选项参数")
 		}
-		// 否则，将该独立参数视为 -i 的值
+		// 否则, 将该独立参数视为 -i 的值
 		sharedFile = nonFlagArgs[0]
 	}
 
-	// 校验 port。无论来源是默认值还是用户输入，都必须是有效的
+	// 校验 port, 无论来源是默认值还是用户输入, 都必须是有效的
 	portNum, err := strconv.Atoi(port)
 	if err != nil {
 		return nil, fmt.Errorf("端口号格式不正确, 必须为数字: %w", err)
@@ -130,7 +130,7 @@ func ValidateAndLoadConfig() (*AppConfig, error) {
 		}
 	}
 
-	// 所有校验通过，构建并返回配置对象
+	// 所有校验通过, 构建并返回配置对象
 	return &AppConfig{
 		SharedFileAbsPath:  sharedFileAbsPath,
 		Message:            message,

@@ -2,7 +2,7 @@
 default:
     @just --list
 
-# 整理 go.mod 与 go.sum，清理无效依赖
+# 整理 go.mod 与 go.sum, 清理无效依赖
 tidy:
     go mod tidy
 
@@ -12,7 +12,7 @@ clean:
     rm -rfv release/
     @echo "清理完成"
 
-# 构建二进制文件，输出至 release/
+# 构建二进制文件, 输出至 release/
 build:
     @mkdir -p release/
     go build -o ./release/rdrop ./cmd/rdrop/

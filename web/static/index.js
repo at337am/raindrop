@@ -18,7 +18,7 @@ async function fetchAndRenderPage() {
         if (info.fileName && info.fileSize) {
             displayFileCard(info, 'shareable-file-card');
 
-            // 获取当前页面的标题，并根据文件名称更新
+            // 获取当前页面的标题, 并根据文件名称更新
             const currentTitle = document.title;
             document.title = `${info.fileName} - ${currentTitle}`;
         }
@@ -36,7 +36,7 @@ async function fetchAndRenderPage() {
         // 最后隐藏提示元素
         promptElement.classList.add('is-hidden');
     } catch (error) {
-        // 如果上面任何一步出错了，就在这里处理。
+        // 如果上面任何一步出错了, 就在这里处理。
         console.error('错误:', error);
         promptElement.textContent = `啊哦, 出了点问题! ${error.message}`;
         promptElement.classList.add('error');
