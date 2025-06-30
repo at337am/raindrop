@@ -12,50 +12,35 @@ raindrop 是一个极其简单易用的命令行工具，旨在帮助你在局�
 
 该工具基于 Go 语言开发，零配置、轻量高效，且跨平台运行，仅需一个独立的二进制文件即可使用。
 
-## ✿ 为什么叫 raindrop?
+## ✿ 为什么叫 raindrop？
 
 灵感源自 IU 的歌曲《Rain Drop》  
-想听听吗? 
+想听听吗？
 
 - [Spotify](https://open.spotify.com/track/6tlMVCqZlmxfnjZt3OiHjE)
 - [171210 IU Palette Rain Drop (YouTube)](https://youtu.be/xgXFCOoQJVc)
 
-注意：为了方便使用，命令行工具的名称为 `rdrop`，您需要使用 `rdrop` 来执行相关命令
+注意：为了方便使用，命令行工具的名称为 `rdrop`，您需要使用 `rdrop` 来执行相关命令。
 
 ## 📦 如何安装？
 
-在开始安装之前，请确保你的系统已正确安装 [Go 开发环境（建议使用 Go 1.20 及以上版本）](https://go.dev/dl/)，并已配置好环境变量（如 `$GOPATH`、`$GOBIN`）。
+本项目提供了 [`justfile`](https://github.com/casey/just)，用于简化常见操作。
 
-本项目提供了 [`justfile`](https://github.com/casey/just)，用于简化常见操作。请根据你的环境选择以下安装方式：
-
-### 方式一：使用 `just` (如已安装)
+### 方式一：使用 just（如已安装）
 
 ```bash
 just tidy     # 整理依赖
-just install  # 安装至本地 Go 环境（$GOBIN 或 $GOPATH/bin）
-```
-
-如仅需构建可执行文件 (不安装):  
-
-```bash
 just build    # 构建至 ./release/rdrop
 ```
 
-### 方式二：使用原生 Go 命令
+### 方式二：使用 Go 命令
 
 ```bash
 go mod tidy
-go install ./cmd/rdrop/
+go build -o ./release/rdrop
 ```
 
-如仅需构建可执行文件 (不安装):  
-
-```bash
-go build -o ./release/rdrop ./cmd/rdrop/
-```
-
-
-## 🤯 如何使用?
+## 🤯 如何使用？
 
 raindrop 启动后，会在你的设备上运行一个临时的 HTTP 服务器（默认监听端口为 1130）。你只需在局域网内的任何其他设备（手机、平板、电脑）的浏览器中打开终端上显示的 URL 即可访问共享的内容。
 
@@ -71,7 +56,7 @@ raindrop 启动后，会在你的设备上运行一个临时的 HTTP 服务器�
 
 ### 用法示例
 
-仅共享一个文件:  
+仅共享一个文件：
 
 ```bash
 # 以下两种方式等效
@@ -79,31 +64,31 @@ rdrop -i my_document.pdf
 rdrop my_document.pdf
 ```
 
-将日志文件内容显示为纯文本:  
+将日志文件内容显示为纯文本：
 
 ```bash
 rdrop -I server-log-2025-06-27.log
 ```
 
-发送一条临时消息:  
+发送一条临时消息：
 
 ```bash
 rdrop -m "这是视频链接: https://youtu.be/xgXFCOoQJVc"
 ```
 
-组合使用, 分享文件并附上说明:  
+组合使用，分享文件并附上说明：
 
 ```bash
 rdrop -i report.zip -m "这是今天的报告"
 ```
 
-组合使用, 同时分享文件、纯文本内容和消息:  
+组合使用，同时分享文件、纯文本内容和消息：
 
 ```bash
 rdrop -i design.sketch -I note.txt -m "这是设计稿和一些注意事项"
 ```
 
-指定一个不同的端口:  
+指定一个不同的端口：
 
 ```bash
 rdrop -i my_video.mp4 -p 8080

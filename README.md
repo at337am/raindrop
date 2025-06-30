@@ -24,34 +24,20 @@ Note: For convenience, the command-line tool is named `rdrop`. Please use `rdrop
 
 ## 📦 How to Install?
 
-Before installing, please make sure your system has the [Go development environment (Go 1.20 or later recommended)](https://go.dev/dl/) properly installed and environment variables (like `$GOPATH`, `$GOBIN`) set.
+This project includes a [`justfile`](https://github.com/casey/just) to simplify common tasks.
 
-This project includes a [`justfile`](https://github.com/casey/just) to simplify common tasks. Choose the method below that fits your environment:
-
-### Method 1: Using `just` (if already installed)
+### Method 1: Using just (if already installed)
 
 ```bash
 just tidy     # tidy up dependencies
-just install  # install to local Go bin directory ($GOBIN or $GOPATH/bin)
-```
-
-If you only want to build the executable without installing:
-
-```bash
 just build    # builds to ./release/rdrop
 ```
 
-### Method 2: Using native Go commands
+### Method 2: Using Go commands
 
 ```bash
 go mod tidy
-go install ./cmd/rdrop/
-```
-
-Or to only build the executable (no install):
-
-```bash
-go build -o ./release/rdrop ./cmd/rdrop/
+go build -o ./release/rdrop
 ```
 
 ## 🤯 How to Use?
