@@ -33,8 +33,8 @@ func SetupRouter(h *handler.APIHandler) *gin.Engine {
 	apiGroup := r.Group("/api")
 	apiGroup.Use(middleware.NoCache()) // 禁止浏览器缓存
 	{
-		apiGroup.GET("/info", h.RenderPage)
-		apiGroup.GET("/download", h.DownloadFile)
+		apiGroup.GET("/info", h.HandleGetInfo)
+		apiGroup.GET("/download", h.HandleDownload)
 	}
 
 	// 根路由：提供应用程序的入口页面 (index.html)

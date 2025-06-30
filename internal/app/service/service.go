@@ -1,95 +1,72 @@
 package service
 
 import (
-	"fmt"
+	"log"
 	"os"
-	"path/filepath"
 	"raindrop/internal/config"
-	"raindrop/pkg/pathutil"
 
 	"github.com/dustin/go-humanize"
 )
 
-// BaseService 定义了服务层应该提供的行为
-type BaseService interface {
-	GetPageInfo() (*PageInfo, error)
-	GetSharedFile() (*SharedFileInfo, error)
+// Service 定义了应用的核心业务逻辑接口, 用于解耦和测试
+type Service interface {
+	GetContent() *SharedContent
 }
 
-// PageInfo 定义了返回给前端的文件信息结构, 对外暴露文件信息
-type PageInfo struct {
-	FileName    string `json:"fileName"`
-	FileSize    string `json:"fileSize"`
-	Description string `json:"description"`
-	Snippet     string `json:"snippet"`
-}
-
-type SharedFileInfo struct {
+// SharedContent 是一个领域模型, 封装了所有要共享的内容信息
+type SharedContent struct {
 	FileName string
+	FileSize string
 	FilePath string
+	Message  string
+	Snippet  string
 }
 
-// APIService 存储服务配置的结构体, 命令行参数
-type APIService struct {
+// LocalFileService 是 Service 接口的具体实现, 负责从本地文件系统读取内容
+type LocalFileService struct {
 	cfg *config.AppConfig
 }
 
-// NewAPIService 创建一个新的 APIService 实例
-func NewAPIService(c *config.AppConfig) BaseService {
-	return &APIService{cfg: c}
+// NewLocalFileService 创建并返回一个基于本地文件的新服务实例
+func NewLocalFileService(c *config.AppConfig) Service {
+	return &LocalFileService{cfg: c}
 }
 
-// GetPageInfo 获取要返回的页面信息
-func (s *APIService) GetPageInfo() (*PageInfo, error) {
+// GetContent 从配置中指定的路径检索文件信息和内容, 填充到 SharedContent 对象中
+func (s *LocalFileService) GetContent() *SharedContent {
+	// 创建一个基础的对象, 先填充不受文件影响的数据
+	content := &SharedContent{
+		Message: s.cfg.Message,
+	}
 
-	// 内容文件中的的内容
-	var content string
-	// 如果内容文件存在且正常, 则读取文件中的内容
-	if err := pathutil.IsValidFilePath(s.cfg.ContentFileAbsPath); err == nil {
-		raw, err := os.ReadFile(s.cfg.ContentFileAbsPath)
+	// 1. 处理共享文件
+	// 如果提供了 SharedFilePath, 则获取其信息
+	if s.cfg.SharedFilePath != "" {
+		info, err := os.Stat(s.cfg.SharedFilePath)
+		// 只有当没有错误且不是目录时才填充文件信息
 		if err != nil {
-			return nil, fmt.Errorf("读取文件内容时出错: %w", err)
+			log.Printf("获取共享文件 '%s' 信息时出错: %v", s.cfg.SharedFilePath, err)
+		} else if info.IsDir() {
+			log.Printf("路径 '%s' 是一个目录, 无法作为共享文件", s.cfg.SharedFilePath)
+		} else {
+			// 既没有错误也不是目录, 才会填充
+			content.FileName = info.Name()
+			content.FileSize = humanize.IBytes(uint64(info.Size()))
+			content.FilePath = s.cfg.SharedFilePath
 		}
-		content = string(raw)
 	}
 
-	// 共享文件的文件信息
-	var fileName string
-	var fileSize string
-	if err := pathutil.IsValidFilePath(s.cfg.SharedFileAbsPath); err == nil {
-		info, err := os.Stat(s.cfg.SharedFileAbsPath)
+	// 2. 处理内容文件
+	// 如果提供了 ContentFilePath, 则尝试读取
+	if s.cfg.ContentFilePath != "" {
+		raw, err := os.ReadFile(s.cfg.ContentFilePath)
 		if err != nil {
-			return nil, fmt.Errorf("获取文件信息时出错: %w", err)
+			// 如果读取失败, 仅记录日志并继续
+			log.Printf("读取内容文件 '%s' 时出错: %v", s.cfg.ContentFilePath, err)
+		} else {
+			content.Snippet = string(raw)
 		}
-		fileName = info.Name()
-		// 使用 humanize.Bytes 将字节大小转换为易读的字符串
-		fileSize = humanize.IBytes(uint64(info.Size()))
 	}
 
-	return &PageInfo{
-		FileName:    fileName,
-		FileSize:    fileSize,
-		Description: s.cfg.Message,
-		Snippet:     content,
-	}, nil
-}
-
-// GetSharedFile 返回 handler 中所需要的文件相关数据, 相当于是从数据库中响应回来
-func (s *APIService) GetSharedFile() (*SharedFileInfo, error) {
-	// 获取文件路径
-	filePath := s.cfg.SharedFileAbsPath
-
-	// 检查文件状态是否正常
-	err := pathutil.IsValidFilePath(filePath)
-	if err != nil {
-		return nil, fmt.Errorf("获取文件失败: %w", err)
-	}
-
-	// 获取文件名称
-	fileName := filepath.Base(filePath)
-
-	return &SharedFileInfo{
-		FileName: fileName,
-		FilePath: filePath,
-	}, nil
+	return content
 }

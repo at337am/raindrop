@@ -23,8 +23,11 @@ func Warn(message string) {
 }
 
 // Error 打印错误提示信息到标准错误输出.
-func Error(message string) {
-	fmt.Fprintf(os.Stderr, "%s%s%s\n", colorRed, message, colorReset)
+func Error(err error) {
+	if err == nil {
+		return
+	}
+	fmt.Fprintf(os.Stderr, "%s%v%s\n", colorRed, err, colorReset)
 }
 
 // Info 打印普通信息提示到标准输出.

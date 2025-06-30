@@ -14,6 +14,11 @@ async function fetchAndRenderPage() {
             throw new Error(info.error || '服务器好像开小差了');
         }
 
+        if (info.isEmpty) {
+            promptElement.textContent = "just air. and maybe some dreams.";
+            return;
+        }
+
         // 文件信息处理
         if (info.fileName && info.fileSize) {
             displayFileCard(info, 'shareable-file-card');
