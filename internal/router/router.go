@@ -2,9 +2,9 @@ package router
 
 import (
 	"net/http"
+	"raindrop/assets"
 	"raindrop/internal/app/handler"
 	"raindrop/internal/middleware"
-	"raindrop/web"
 
 	"github.com/gin-gonic/gin"
 )
@@ -24,10 +24,7 @@ func SetupRouter(h *handler.APIHandler) *gin.Engine {
 	r.Use(middleware.AccessLogger())
 
 	// 静态资源路由：将 /static 映射到嵌入的模板文件系统
-	staticGroup := r.Group("/static")
-	{
-		staticGroup.StaticFS("/", http.FS(web.WebFS))
-	}
+	r.StaticFS("/static", http.FS(assets.FS))
 
 	// API 路由：定义所有 API 接口, 并应用 NoCache 中间件
 	apiGroup := r.Group("/api")
@@ -39,8 +36,7 @@ func SetupRouter(h *handler.APIHandler) *gin.Engine {
 
 	// 根路由：提供应用程序的入口页面 (index.html)
 	r.GET("/", func(c *gin.Context) {
-		// 从嵌入文件系统读取并提供 index.html, 因为使用了 "embed.FS"
-		fileBytes, err := web.WebFS.ReadFile("templates/index.html")
+		fileBytes, err := assets.FS.ReadFile("templates/index.html")
 		if err != nil {
 			c.String(http.StatusInternalServerError, "Internal Server Error: index.html not found")
 			return

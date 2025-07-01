@@ -136,7 +136,7 @@ func getLocaleLanguage() string {
 // printServerInfo 打印服务器信息, 包括局域网 IP
 func printServerInfo(port string) {
 	// 显示 logo
-	successColor.Println(assets.TTYLogo)
+	successColor.Println(assets.Logo)
 
 	fmt.Println("Starting raindrop server...")
 	fmt.Println("\nAccess URLs:")
