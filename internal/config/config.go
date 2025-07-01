@@ -30,7 +30,7 @@ func (cfg *AppConfig) Validate() error {
 	if cfg.SharedFilePath != "" {
 		cfg.SharedFilePath, err = isValidFilePath(cfg.SharedFilePath)
 		if err != nil {
-			return fmt.Errorf("校验 -i 选项参数时出错: %w", err)
+			return err
 		}
 	}
 
@@ -38,7 +38,7 @@ func (cfg *AppConfig) Validate() error {
 	if cfg.ContentFilePath != "" {
 		cfg.ContentFilePath, err = isValidFilePath(cfg.ContentFilePath)
 		if err != nil {
-			return fmt.Errorf("校验 -I 选项参数时出错: %w", err)
+			return err
 		}
 	}
 
