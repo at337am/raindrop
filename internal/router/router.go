@@ -21,15 +21,15 @@ func SetupRouter(h Handler) *gin.Engine {
 
 	r := gin.New() // 创建一个“空白”的 Gin 实例, 不包含任何默认中间件
 
-	r.Use(gin.Recovery()) // 中间件：用于捕获处理请求过程中发生的 panic, 并返回 500 错误, 防止程序崩溃
+	r.Use(gin.Recovery()) // 中间件: 用于捕获处理请求过程中发生的 panic, 并返回 500 错误, 防止程序崩溃
 
 	// 使用中间件, 记录访问日志
 	r.Use(middleware.AccessLogger())
 
-	// 静态资源路由：将 /static 映射到嵌入的模板文件系统
+	// 静态资源路由: 将 /static 映射到嵌入的模板文件系统
 	r.StaticFS("/static", http.FS(assets.FS))
 
-	// API 路由：定义所有 API 接口, 并应用 NoCache 中间件
+	// API 路由: 定义所有 API 接口, 并应用 NoCache 中间件
 	apiGroup := r.Group("/api")
 	apiGroup.Use(middleware.NoCache()) // 禁止浏览器缓存
 	{
@@ -37,7 +37,7 @@ func SetupRouter(h Handler) *gin.Engine {
 		apiGroup.GET("/download", h.HandleDownload)
 	}
 
-	// 根路由：提供应用程序的入口页面 (index.html)
+	// 根路由: 提供应用程序的入口页面 (index.html)
 	r.GET("/", func(c *gin.Context) {
 		fileBytes, err := assets.FS.ReadFile("templates/index.html")
 		if err != nil {
