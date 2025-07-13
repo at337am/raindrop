@@ -1,5 +1,4 @@
-// ===>>> 开始修改 1 <<<===
-// 从服务器获取页面信息并触发显示。
+// 从服务器获取页面信息并触发显示
 async function fetchAndRenderPage() {
     // 状态显示的元素
     const promptElement = document.getElementById('prompt');
@@ -33,7 +32,7 @@ async function fetchAndRenderPage() {
             if (info.files.length === 1) {
                 document.title = `${info.files[0].fileName} - ${currentTitle}`;
             } else {
-                document.title = `${info.files.length} Files Available - ${currentTitle}`;
+                document.title = `${info.files.length} files - ${currentTitle}`;
             }
         }
 

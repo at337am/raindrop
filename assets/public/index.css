@@ -31,17 +31,18 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    min-height: 100vh;
+    /* justify-content: center;
+    min-height: 100vh; */
 }
 
 /* 标题 */
 h1 {
-    font-size: 4rem;
-    position: absolute;
+    font-size: 3rem;
+    margin: 2rem 0;
+    /* position: absolute;
     top: 2rem;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(-50%); */
 }
 
 h1 span {
@@ -65,7 +66,33 @@ h1 span {
     color: #ff6363;
 }
 
-/* 文件项目 */
+/* 消息区域 */
+#description-message {
+    font-size: 1.5rem;
+    max-width: 80vw;
+    margin-bottom: 2rem;
+
+    /* 单词强制换行 */
+    overflow-wrap: break-word;
+}
+
+/* 纯文本区域 */
+#snippet-content {
+    font-size: 1rem;
+    min-width: 60vw;
+    max-width: 80vw;
+    margin-bottom: 2rem;
+
+    padding: 1rem;
+
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    overflow: hidden;
+
+    background-color: #e8e8e8;
+}
+
+/* ====== 单个共享文件 开始 ======*/
 .file-item {
     display: flex;
     align-items: center;
@@ -73,7 +100,7 @@ h1 span {
 
     padding: 1rem 1.5rem;
     max-width: 80vw;
-    margin: 1rem 0;
+    margin-bottom: 1rem;
 
     border: 3px solid #333;
     border-radius: 6px;
@@ -107,32 +134,7 @@ h1 span {
     color: #666;
     font-style: italic;
 }
-
-/* 消息区域 */
-#description-message {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-    max-width: 80vw;
-
-    /* 单词强制换行 */
-    overflow-wrap: break-word;
-}
-
-/* 纯文本区域 */
-#snippet-content {
-    font-size: 1rem;
-    margin-bottom: 1rem;
-    max-width: 80vw;
-
-    padding: 1rem;
-
-    white-space: pre-wrap;
-    overflow-wrap: break-word;
-    overflow: hidden;
-
-    border-left: 4px solid #333;
-    background-color: #e8e8e8;
-}
+/* ====== 单个共享文件 结束 ======*/
 
 /* 缩小到原来的 0.8 倍 */
 @media (max-width: 768px) {
