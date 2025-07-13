@@ -22,16 +22,16 @@ func newRootCmd() *cobra.Command {
 	runner := cli.NewRunner()
 
 	var cmd = &cobra.Command{
-		Use:   "rdrop <shared-file>",
+		Use:   "rdrop [shared-files...]",
 		Short: "for file and text sharing",
 
-		SilenceUsage: true,                  // 禁止 在出现错误时, 自动打印用法信息 Usage
-		Args:         cobra.MaximumNArgs(1), // 最多一个位置参数
+		SilenceUsage: true,
+		Args:         cobra.ArbitraryArgs, // 允许任意数量的位置参数
 
 		// RunE 是执行入口函数, 它允许返回 error, 是 cobra 的推荐的实践
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) > 0 {
-				runner.Config.SharedFilePath = args[0]
+				runner.Config.SharedFilePaths = args // 将所有参数赋值给文件路径切片
 			}
 
 			if err := runner.Validate(); err != nil {

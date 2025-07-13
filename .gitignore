@@ -23,6 +23,8 @@ images/
 videos/
 fonts/
 release/
+bak/
+backup/
 
 # archive compressed
 *.zip
@@ -159,3 +161,5 @@ release/
 .out
 todo.md
 todo.txt
+__debug*
+

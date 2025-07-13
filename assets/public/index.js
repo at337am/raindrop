@@ -1,3 +1,4 @@
+// ===>>> 开始修改 1 <<<===
 // 从服务器获取页面信息并触发显示。
 async function fetchAndRenderPage() {
     // 状态显示的元素
@@ -5,10 +6,7 @@ async function fetchAndRenderPage() {
 
     try {
         const response = await fetch('/api/info');
-
         const info = await response.json();
-
-        // throw new Error('这是一个模拟的测试错误！');
 
         if (!response.ok) {
             throw new Error(info.error || '服务器好像开小差了');
@@ -19,13 +17,24 @@ async function fetchAndRenderPage() {
             return;
         }
 
-        // 文件信息处理
-        if (info.fileName && info.fileSize) {
-            displayFileCard(info, 'shareable-file-card');
+        // 文件列表处理
+        if (info.files && info.files.length > 0) {
+            const fileContainer = document.getElementById('shareable-file-card');
+            
+            // 遍历文件列表，为每个文件创建一个卡片
+            info.files.forEach(file => {
+                displayFileCard(file, fileContainer);
+            });
+            
+            fileContainer.classList.remove('is-hidden'); // 显示整个文件容器
 
-            // 获取当前页面的标题, 并根据文件名称更新
+            // 更新页面标题
             const currentTitle = document.title;
-            document.title = `${info.fileName} - ${currentTitle}`;
+            if (info.files.length === 1) {
+                document.title = `${info.files[0].fileName} - ${currentTitle}`;
+            } else {
+                document.title = `${info.files.length} Files Available - ${currentTitle}`;
+            }
         }
 
         // 描述信息处理
@@ -41,30 +50,29 @@ async function fetchAndRenderPage() {
         // 最后隐藏提示元素
         promptElement.classList.add('is-hidden');
     } catch (error) {
-        // 如果上面任何一步出错了, 就在这里处理。
         console.error('错误:', error);
         promptElement.textContent = `啊哦, 出了点问题! ${error.message}`;
         promptElement.classList.add('error');
     }
 }
 
-// 显示共享文件卡片
-function displayFileCard(info, elementId) {
-    const targetDiv = document.getElementById(elementId);
+// 显示单个共享文件卡片
+function displayFileCard(file, container) {
     const template = document.getElementById('file-item-template');
 
-    // 克隆模板内容。true 表示深度克隆（包含所有子节点）
+    // 克隆模板内容
     const fileItemClone = template.content.cloneNode(true);
-    fileItemClone.querySelector('.file-name').textContent = info.fileName;
-    fileItemClone.querySelector('.file-size').textContent = info.fileSize;
+    const anchorElement = fileItemClone.querySelector('.file-item');
 
-    // 移除设置 download 属性的代码行。
-    // 最佳实践是完全依赖服务器端 Content-Disposition 头部来控制文件名。
-    // fileItemClone.querySelector('.file-item').setAttribute('download', info.fileName);
+    // 填充文件名和大小
+    anchorElement.querySelector('.file-name').textContent = file.fileName;
+    anchorElement.querySelector('.file-size').textContent = file.fileSize;
 
-    // 将克隆并填充好的元素添加到页面
-    targetDiv.appendChild(fileItemClone);
-    targetDiv.classList.remove('is-hidden');
+    // 设置正确的下载链接，包含文件名作为查询参数
+    anchorElement.href = `/api/download?file=${encodeURIComponent(file.fileName)}`;
+
+    // 将克隆并填充好的元素添加到容器中
+    container.appendChild(fileItemClone);
 }
 
 // 辅助函数, 给指定ID元素的文本内容, 并显示

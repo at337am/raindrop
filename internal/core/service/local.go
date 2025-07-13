@@ -26,21 +26,31 @@ func (s *LocalService) GetContent() *handler.SharedContent {
 	// 创建一个基础的对象, 先填充不受文件影响的数据
 	content := &handler.SharedContent{
 		Message: s.cfg.Message,
+		Files:   []handler.FileInfo{},
+		FileMap: make(map[string]string),
 	}
 
-	// 1. 处理共享文件
-	// 如果提供了 SharedFilePath, 则获取其信息
-	if s.cfg.SharedFilePath != "" {
-		info, err := os.Stat(s.cfg.SharedFilePath)
-		if err != nil {
-			slog.Error("无法获取共享文件信息", "path", s.cfg.SharedFilePath, "error", err)
-		} else if info.IsDir() {
-			slog.Warn("路径是一个目录，不能作为文件共享", "path", s.cfg.SharedFilePath)
-		} else {
-			// 只有当没有错误且不是目录时才填充文件信息
-			content.FileName = info.Name()
-			content.FileSize = humanize.IBytes(uint64(info.Size()))
-			content.FilePath = s.cfg.SharedFilePath
+	// 1. 处理共享文件列表
+	// 如果提供了 SharedFilePaths, 则获取每个文件的信息
+	if len(s.cfg.SharedFilePaths) > 0 {
+		for _, path := range s.cfg.SharedFilePaths {
+			info, err := os.Stat(path)
+			if err != nil {
+				slog.Error("无法获取共享文件信息", "path", path, "error", err)
+				continue // 跳过无效文件
+			}
+			if info.IsDir() {
+				slog.Warn("路径是一个目录, 已跳过", "path", path)
+				continue // 跳过目录
+			}
+
+			// 填充文件信息
+			fileInfo := handler.FileInfo{
+				FileName: info.Name(),
+				FileSize: humanize.IBytes(uint64(info.Size())),
+			}
+			content.Files = append(content.Files, fileInfo)
+			content.FileMap[info.Name()] = path
 		}
 	}
 

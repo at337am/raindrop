@@ -7,13 +7,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// SharedContent 存储返回 JSON 的数据
-type SharedContent struct {
+type FileInfo struct {
 	FileName string
 	FileSize string
-	FilePath string
-	Message  string
-	Snippet  string
+}
+
+// SharedContent 存储返回 JSON 的数据
+type SharedContent struct {
+	Files   []FileInfo        // 文件信息列表
+	FileMap map[string]string // 用于按文件名快速查找文件路径的映射
+	Message string
+	Snippet string
 }
 
 // Service 接口
@@ -33,25 +37,37 @@ func NewAPIHandler(s Service) *APIHandler {
 func (h *APIHandler) HandleGetInfo(c *gin.Context) {
 	sharedContent := h.svc.GetContent()
 
+	// 定义文件信息的响应结构
+	type fileInfo struct {
+		FileName string `json:"fileName"`
+		FileSize string `json:"fileSize"`
+	}
+
 	// 定义响应结构
 	type pageInfoResponse struct {
-		FileName    string `json:"fileName"`
-		FileSize    string `json:"fileSize"`
-		Description string `json:"description"`
-		Snippet     string `json:"snippet"`
-		IsEmpty     bool   `json:"isEmpty"`
+		Files       []fileInfo `json:"files"` // 文件列表
+		Description string     `json:"description"`
+		Snippet     string     `json:"snippet"`
+		IsEmpty     bool       `json:"isEmpty"`
 	}
 
 	// 从领域对象映射到响应
 	resp := pageInfoResponse{
-		FileName:    sharedContent.FileName,
-		FileSize:    sharedContent.FileSize,
+		Files:       make([]fileInfo, 0, len(sharedContent.Files)), // 初始化切片
 		Description: sharedContent.Message,
 		Snippet:     sharedContent.Snippet,
 	}
 
+	// 填充文件列表
+	for _, f := range sharedContent.Files {
+		resp.Files = append(resp.Files, fileInfo{
+			FileName: f.FileName,
+			FileSize: f.FileSize,
+		})
+	}
+
 	// 判断所有内容字段是否都为空
-	if resp.FileName == "" && resp.FileSize == "" && resp.Description == "" && resp.Snippet == "" {
+	if len(resp.Files) == 0 && resp.Description == "" && resp.Snippet == "" {
 		resp.IsEmpty = true
 		slog.Warn("所有共享内容字段均为空")
 	}
@@ -61,11 +77,21 @@ func (h *APIHandler) HandleGetInfo(c *gin.Context) {
 
 // HandleDownload 将领域对象适配为文件下载响应
 func (h *APIHandler) HandleDownload(c *gin.Context) {
+	// 从查询参数中获取请求的文件名
+	fileName := c.Query("file")
+	if fileName == "" {
+		c.String(http.StatusBadRequest, "文件名参数 'file' 不能为空")
+		return
+	}
+
 	sharedContent := h.svc.GetContent()
 
-	if sharedContent.FilePath == "" {
+	filePath, ok := sharedContent.FileMap[fileName]
+
+	if !ok || filePath == "" {
 		slog.Warn(
-			"文件下载失败: 未找到可共享文件或文件路径无效",
+			"文件下载失败: 未找到指定文件或路径无效",
+			"requestedFile", fileName,
 			"clientIP", c.ClientIP(),
 		)
 		c.Status(http.StatusNotFound)
@@ -73,14 +99,15 @@ func (h *APIHandler) HandleDownload(c *gin.Context) {
 	}
 
 	// 记录下载开始的日志
+	// 记录下载开始的日志
 	if c.GetHeader("Range") == "" {
 		slog.Info(
 			"开始下载文件",
-			"fileName", sharedContent.FileName,
+			"fileName", fileName,
 			"clientIP", c.ClientIP(),
 		)
 	}
 
-	// 将指定文件作为附件发送给客户端, 浏览器将提示用户下载该文件
-	c.FileAttachment(sharedContent.FilePath, sharedContent.FileName)
+	// 将指定文件作为附件发送给客户端
+	c.FileAttachment(filePath, fileName)
 }

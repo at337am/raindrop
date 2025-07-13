@@ -57,12 +57,16 @@ func (r *Runner) Validate() error {
 	}
 
 	// --- 共享文件路径校验 ---
-	if r.Config.SharedFilePath != "" {
-		absPath, err := isValidFilePath(r.Config.SharedFilePath)
-		if err != nil {
-			return err
+	if len(r.Config.SharedFilePaths) > 0 {
+		validatedPaths := make([]string, 0, len(r.Config.SharedFilePaths))
+		for _, path := range r.Config.SharedFilePaths {
+			absPath, err := isValidFilePath(path)
+			if err != nil {
+				return err
+			}
+			validatedPaths = append(validatedPaths, absPath)
 		}
-		r.Config.SharedFilePath = absPath
+		r.Config.SharedFilePaths = validatedPaths
 	}
 
 	// --- 内容文件路径校验 ---
