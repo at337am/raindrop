@@ -46,52 +46,55 @@ When launched, raindrop runs a temporary HTTP server on your device (default por
 
 ### Option Overview
 
-| Option | Description                                                             | Default |
-| ------ | ----------------------------------------------------------------------- | ------- |
-| `-i`   | Path to a single file to share (downloadable link)                      | None    |
-| `-I`   | Path to a file whose content will be shown as plain text in the browser | None    |
-| `-m`   | Text message to send                                                    | None    |
-| `-p`   | Port to run the service on                                              | `1130`  |
-| `-h`   | Show help information                                                   | —       |
+| Short Option | Full Option    | Description                                                                  | Default |
+| :----------- | :------------- | :--------------------------------------------------------------------------- | :------ |
+| `-m`         | `--message`    | The message content to send.                                                 | None    |
+| `-c`         | `--content-file` | Specify the path to a file whose content will be sent as plain text.         | None    |
+| `-d`         | `--dir`        | Specify the path to a directory whose files will be shared. Does not include dotfiles (files starting with `.`) and dot-prefixed subdirectories. | None    |
+| `-p`         | `--port`       | Specify the port on which the server runs.                                   | 1130    |
 
 ### Usage Examples
 
-Share just one file:
+**Share Specific Files**  
+Share one or more files by directly following the command with their paths.
 
 ```bash
-# Both commands do the same thing
-rdrop -i my_document.pdf
-rdrop my_document.pdf
+rdrop ./path/to/file1.txt ./path/to/image.jpg
 ```
 
-Show a log file as plain text in the browser:
+**Send Message**  
+Send plain text messages using the `-m` or `--message` option.
 
 ```bash
-rdrop -I server-log-2025-06-27.log
+rdrop -m "This is a video link: https://youtu.be/xgXFCOoQJVc"
 ```
 
-Send a temporary message:
+**Send File Content**  
+Read the content of a specified file and send it as plain text using the `-c` or `--content-file` option.
 
 ```bash
-rdrop -m "Here’s a video link: https://youtu.be/xgXFCOoQJVc"
+rdrop -c ./path/to/iu_doc.txt
 ```
 
-Combine file sharing with a message:
+**Share Directory**  
+Share a directory using the `-d` or `--dir` option. Note: When sharing a directory, dotfiles (files starting with `.`) and dot-prefixed subdirectories within the directory will not be included.
 
 ```bash
-rdrop -i report.zip -m "Here’s today’s report"
+rdrop -d ./iu_folder
 ```
 
-Share a file, plain text content, and a message all at once:
+**Specify Server Port**  
+Specify the server port for the application to run on using the `-p` or `--port` option.
 
 ```bash
-rdrop -i design.sketch -I note.txt -m "Here’s the design draft and some notes"
+rdrop -p 1993 -m "Love my IU"
 ```
 
-Run the service on a different port:
+**Combine All Options**  
+All options can be combined to meet more complex requirements.
 
 ```bash
-rdrop -i my_video.mp4 -p 8080
+rdrop -m "Hi! These are today's materials" -c README.md -d ./downloads -p 9000 file.zip
 ```
 
 ## 🥺 Security Notice
