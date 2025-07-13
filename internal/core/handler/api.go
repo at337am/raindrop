@@ -1,20 +1,31 @@
 package handler
 
 import (
-	"log"
+	"log/slog"
 	"net/http"
-	"raindrop/internal/app/service"
 
 	"github.com/gin-gonic/gin"
 )
 
-// APIHandler 封装HTTP请求处理器, 通过svc接口调用业务逻辑
-type APIHandler struct {
-	svc service.Service
+// SharedContent 存储返回 JSON 的数据
+type SharedContent struct {
+	FileName string
+	FileSize string
+	FilePath string
+	Message  string
+	Snippet  string
 }
 
-// NewAPIHandler 构造函数, 创建API处理器实例并注入服务依赖
-func NewAPIHandler(s service.Service) *APIHandler {
+// Service 接口
+type Service interface {
+	GetContent() *SharedContent
+}
+
+type APIHandler struct {
+	svc Service
+}
+
+func NewAPIHandler(s Service) *APIHandler {
 	return &APIHandler{svc: s}
 }
 
@@ -42,7 +53,7 @@ func (h *APIHandler) HandleGetInfo(c *gin.Context) {
 	// 判断所有内容字段是否都为空
 	if resp.FileName == "" && resp.FileSize == "" && resp.Description == "" && resp.Snippet == "" {
 		resp.IsEmpty = true
-		log.Printf("所有的共享内容字段都为空")
+		slog.Warn("所有共享内容字段均为空")
 	}
 
 	c.JSON(http.StatusOK, resp)
@@ -53,14 +64,21 @@ func (h *APIHandler) HandleDownload(c *gin.Context) {
 	sharedContent := h.svc.GetContent()
 
 	if sharedContent.FilePath == "" {
-		log.Printf("文件下载失败: 未找到可共享文件或文件路径无效, 来自 -> %s\n", c.ClientIP())
+		slog.Warn(
+			"文件下载失败: 未找到可共享文件或文件路径无效",
+			"clientIP", c.ClientIP(),
+		)
 		c.Status(http.StatusNotFound)
 		return
 	}
 
 	// 记录下载开始的日志
 	if c.GetHeader("Range") == "" {
-		log.Printf("开始下载文件: %s, 来自 -> %s\n", sharedContent.FileName, c.ClientIP())
+		slog.Info(
+			"开始下载文件",
+			"fileName", sharedContent.FileName,
+			"clientIP", c.ClientIP(),
+		)
 	}
 
 	// 将指定文件作为附件发送给客户端, 浏览器将提示用户下载该文件

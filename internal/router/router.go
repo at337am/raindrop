@@ -3,14 +3,17 @@ package router
 import (
 	"net/http"
 	"raindrop/assets"
-	"raindrop/internal/app/handler"
 	"raindrop/internal/middleware"
 
 	"github.com/gin-gonic/gin"
 )
 
-// SetupRouter 初始化并配置 Gin 路由器。
-func SetupRouter(h *handler.APIHandler) *gin.Engine {
+type Handler interface {
+	HandleGetInfo(c *gin.Context)
+	HandleDownload(c *gin.Context)
+}
+
+func SetupRouter(h Handler) *gin.Engine {
 
 	gin.SetMode(gin.ReleaseMode) // 设置为 ReleaseMode 发布模式, 减少日志输出和性能优化
 

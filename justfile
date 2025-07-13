@@ -2,6 +2,9 @@
 default:
     @just --list
 
+cp:
+    fd -e go -x sh -c 'echo "===== {} ====="; cat {}; echo' | wl-copy
+
 # 整理依赖
 tidy:
     @go mod tidy
@@ -12,10 +15,6 @@ clean:
     @echo "正在清理..."
     @rm -rfv release/
     @echo "清理完成"
-
-# 直接运行源码
-run:
-    @go run main.go -i ./README.md -m "Hello World"
 
 # 构建二进制文件
 build:

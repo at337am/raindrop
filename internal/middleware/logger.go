@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"log"
+	"log/slog"
 
 	"github.com/gin-gonic/gin"
 )
@@ -11,7 +11,7 @@ func AccessLogger() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// 判断请求的路径
 		if c.Request.URL.Path == "/api/info" {
-			log.Printf("会话建立 -> %s\n", c.ClientIP())
+			slog.Info("会话已建立", "clientIP", c.ClientIP())
 		}
 
 		c.Next()
