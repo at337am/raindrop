@@ -48,6 +48,7 @@ func newRootCmd() *cobra.Command {
 
 	cmd.Flags().StringVarP(&runner.Config.Message, "message", "m", "", "Message content to send")
 	cmd.Flags().StringVarP(&runner.Config.ContentFilePath, "content-file", "c", "", "Path of a file whose content will be sent as plain text")
+	cmd.Flags().StringVarP(&runner.Config.SharedDirPath, "dir", "d", "", "Path of a directory whose files will be shared")
 	cmd.Flags().IntVarP(&runner.Config.Port, "port", "p", 1130, "Specify the server port")
 
 	return cmd

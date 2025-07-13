@@ -3,8 +3,6 @@ package cli
 import (
 	"fmt"
 	"net"
-	"os"
-	"path/filepath"
 	"raindrop/assets"
 	"raindrop/internal/config"
 	"raindrop/internal/core/handler"
@@ -26,63 +24,11 @@ func NewRunner() *Runner {
 	}
 }
 
-// Validate 校验参数
-func (r *Runner) Validate() error {
-	if r.Config.Port < 1 || r.Config.Port > 65535 {
-		return fmt.Errorf("端口号 %d 无效, 必须在 1-65535 之间", r.Config.Port)
-	}
-
-	// isValidFilePath 检查路径是否有效, 是否为文件, 返回绝对路径
-	isValidFilePath := func(path string) (string, error) {
-		absPath, err := filepath.Abs(path)
-		if err != nil {
-			return "", fmt.Errorf("无法获取绝对路径: %w", err)
-		}
-
-		info, err := os.Stat(absPath)
-		if err != nil {
-			if os.IsNotExist(err) {
-				return "", fmt.Errorf("文件不存在: '%s'", absPath)
-			} else if os.IsPermission(err) {
-				return "", fmt.Errorf("权限不足, 无法访问: %q", absPath)
-			} else {
-				return "", fmt.Errorf("访问路径 '%s' 时发生未知错误: %w", absPath, err)
-			}
-		}
-		if info.IsDir() {
-			return "", fmt.Errorf("路径 '%s' 是一个目录, 请提供文件路径", absPath)
-		}
-
-		return absPath, nil
-	}
-
-	// --- 共享文件路径校验 ---
-	if len(r.Config.SharedFilePaths) > 0 {
-		validatedPaths := make([]string, 0, len(r.Config.SharedFilePaths))
-		for _, path := range r.Config.SharedFilePaths {
-			absPath, err := isValidFilePath(path)
-			if err != nil {
-				return err
-			}
-			validatedPaths = append(validatedPaths, absPath)
-		}
-		r.Config.SharedFilePaths = validatedPaths
-	}
-
-	// --- 内容文件路径校验 ---
-	if r.Config.ContentFilePath != "" {
-		absPath, err := isValidFilePath(r.Config.ContentFilePath)
-		if err != nil {
-			return err
-		}
-		r.Config.ContentFilePath = absPath
-	}
-
-	return nil
-}
-
 // Run 执行核心逻辑
 func (r *Runner) Run() error {
+	// 显示启动信息
+	r.printServerInfo()
+
 	// 依赖注入和初始化
 	s := service.NewLocalService(r.Config)
 	h := handler.NewAPIHandler(s)
@@ -90,9 +36,6 @@ func (r *Runner) Run() error {
 
 	// 拼接端口号
 	addr := ":" + strconv.Itoa(r.Config.Port)
-
-	// 显示启动信息
-	printServerInfo(addr)
 
 	// 启动服务
 	if err := router.Run(addr); err != nil {
@@ -102,14 +45,36 @@ func (r *Runner) Run() error {
 	return nil
 }
 
-// printServerInfo 打印服务器信息, 包括局域网 IP
-func printServerInfo(port string) {
+// orDefault 是一个辅助函数, 如果输入值为空字符串, 则返回指定的默认值。
+func orDefault(value, defaultValue string) string {
+	if value == "" {
+		return defaultValue
+	}
+	return value
+}
+
+// printServerInfo 打印服务器信息, 包括局域网 IP 和共享内容摘要
+func (r *Runner) printServerInfo() {
 	// 显示 logo
 	successColor.Print(assets.Logo)
 
-	fmt.Println("Starting raindrop server...")
-	fmt.Println("\nAccess URLs:")
-	successColor.Printf("   Local:   http://127.0.0.1%s\n", port)
+	// 打印共享内容信息
+	warnColor.Printf("Sharing List:\n")
+	fmt.Printf("  Message:          %s\n", orDefault(r.Config.Message, "<not set>"))
+	fmt.Printf("  Content File:     %s\n", orDefault(r.Config.ContentFilePath, "<not set>"))
+	fmt.Printf("  Shared Directory: %s\n", orDefault(r.Config.SharedDirPath, "<not set>"))
+	fmt.Printf("  Shared Files (%d):\n", len(r.Config.SharedFilePaths))
+	if len(r.Config.SharedFilePaths) > 0 {
+		for i, path := range r.Config.SharedFilePaths {
+			fmt.Printf("    %d. %s\n", i+1, path)
+		}
+	}
+
+	port := strconv.Itoa(r.Config.Port)
+
+	warnColor.Printf("\nAccess URLs:\n")
+	fmt.Printf("  Local:   ")
+	successColor.Printf("http://127.0.0.1:%s\n", port)
 
 	interfaces, err := net.Interfaces()
 	if err != nil {
@@ -131,10 +96,11 @@ func printServerInfo(port string) {
 			}
 			// 过滤掉回环地址和非 IPv4 地址
 			if ip != nil && !ip.IsLoopback() && ip.To4() != nil {
-				successColor.Printf("   Network: http://%s:%s\n", ip.String(), port)
+				fmt.Printf("  Network: ")
+				successColor.Printf("http://%s:%s\n", ip.String(), port)
 			}
 		}
 	}
 
-	fmt.Printf("\nPress Ctrl+C to stop the server.\n")
+	fmt.Printf("\nPress Ctrl+C to stop the server\n")
 }

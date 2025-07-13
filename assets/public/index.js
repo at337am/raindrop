@@ -20,12 +20,12 @@ async function fetchAndRenderPage() {
         // 文件列表处理
         if (info.files && info.files.length > 0) {
             const fileContainer = document.getElementById('shareable-file-card');
-            
-            // 遍历文件列表，为每个文件创建一个卡片
+
+            // 遍历文件列表, 为每个文件创建一个卡片
             info.files.forEach(file => {
                 displayFileCard(file, fileContainer);
             });
-            
+
             fileContainer.classList.remove('is-hidden'); // 显示整个文件容器
 
             // 更新页面标题
@@ -68,7 +68,7 @@ function displayFileCard(file, container) {
     anchorElement.querySelector('.file-name').textContent = file.fileName;
     anchorElement.querySelector('.file-size').textContent = file.fileSize;
 
-    // 设置正确的下载链接，包含文件名作为查询参数
+    // 设置正确的下载链接, 包含文件名作为查询参数
     anchorElement.href = `/api/download?file=${encodeURIComponent(file.fileName)}`;
 
     // 将克隆并填充好的元素添加到容器中
