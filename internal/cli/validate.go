@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"errors"
 	"fmt"
 	"io/fs"
 	"os"
@@ -36,7 +37,7 @@ func validatePath(path string, mustBeDir bool) (string, error) {
 
 	info, err := os.Stat(absPath)
 	if err != nil {
-		if os.IsNotExist(err) {
+		if errors.Is(err, os.ErrNotExist) {
 			return "", fmt.Errorf("路径不存在: '%s'", absPath)
 		}
 		return "", fmt.Errorf("访问路径 '%s' 时出错: %w", absPath, err)
