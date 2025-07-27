@@ -137,7 +137,7 @@ h1 span {
 /* ====== 单个共享文件 结束 ======*/
 
 /* 缩小到原来的 0.8 倍 */
-@media (max-width: 768px) {
+@media (max-width: 767.98px) {
     html {
         font-size: 12.8px;
     }
