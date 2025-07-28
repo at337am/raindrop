@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"raindrop/internal/config"
 	"raindrop/internal/core/handler"
+	"strings"
 
 	"github.com/dustin/go-humanize"
 )
@@ -65,6 +66,11 @@ func (s *LocalService) GetContent() *handler.SharedContent {
 				}
 
 				for _, entry := range entries {
+					// 默认排除 点开头的隐藏文件
+					if strings.HasPrefix(entry.Name(), ".") {
+						continue
+					}
+
 					// 跳过所有子目录
 					if entry.IsDir() {
 						continue
