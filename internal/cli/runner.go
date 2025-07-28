@@ -79,11 +79,10 @@ func (r *Runner) printServerInfo() {
 	// 打印共享内容信息
 	warnColor.Printf("Sharing List:\n")
 	fmt.Printf("  Message:          %s\n", orDefault(r.Config.Message, "<not set>"))
-	fmt.Printf("  Content File:     %s\n", orDefault(toRelative(r.Config.ContentFilePath), "<not set>"))
-	fmt.Printf("  Shared Directory: %s\n", orDefault(toRelative(r.Config.SharedDirPath), "<not set>"))
-	fmt.Printf("  Shared Files (%d):\n", len(r.Config.SharedFilePaths))
-	if len(r.Config.SharedFilePaths) > 0 {
-		for i, path := range r.Config.SharedFilePaths {
+	fmt.Printf("  Content File:     %s\n", orDefault(toRelative(r.Config.ContentPath), "<not set>"))
+	fmt.Printf("  Shared Paths (%d):\n", len(r.Config.SharedPaths))
+	if len(r.Config.SharedPaths) > 0 {
+		for i, path := range r.Config.SharedPaths {
 			fmt.Printf("    %d. %s\n", i+1, toRelative(path))
 		}
 	}

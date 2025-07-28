@@ -31,7 +31,7 @@ func newRootCmd() *cobra.Command {
 		// RunE 是执行入口函数, 它允许返回 error, 是 cobra 的推荐的实践
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) > 0 {
-				runner.Config.SharedFilePaths = args // 将所有参数赋值给文件路径切片
+				runner.Config.SharedPaths = args // 将所有参数赋值给文件路径切片
 			}
 
 			if err := runner.Validate(); err != nil {
@@ -47,8 +47,7 @@ func newRootCmd() *cobra.Command {
 	}
 
 	cmd.Flags().StringVarP(&runner.Config.Message, "message", "m", "", "Message content to send")
-	cmd.Flags().StringVarP(&runner.Config.ContentFilePath, "content-file", "c", "", "Path of a file whose content will be sent as plain text")
-	cmd.Flags().StringVarP(&runner.Config.SharedDirPath, "dir", "d", "", "Path of a directory whose files will be shared")
+	cmd.Flags().StringVarP(&runner.Config.ContentPath, "content", "c", "", "Path of a file whose content will be sent as plain text")
 	cmd.Flags().IntVarP(&runner.Config.Port, "port", "p", 1130, "Specify the server port")
 
 	return cmd
