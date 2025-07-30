@@ -30,8 +30,10 @@ func newRootCmd() *cobra.Command {
 
 		// RunE 是执行入口函数, 它允许返回 error, 是 cobra 的推荐的实践
 		RunE: func(cmd *cobra.Command, args []string) error {
-			if len(args) > 0 {
-				runner.Config.SharedPaths = args // 将所有参数赋值给文件路径切片
+			if len(args) == 0 {
+				runner.Config.SharedPaths = []string{"."} // 默认共享当前路径
+			} else {
+				runner.Config.SharedPaths = args // 将所有参数赋值给共享路径切片
 			}
 
 			if err := runner.Validate(); err != nil {

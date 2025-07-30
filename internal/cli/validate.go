@@ -9,27 +9,11 @@ import (
 
 // Validate 校验所有配置参数
 func (r *Runner) Validate() error {
-	if err := r.validatePort(); err != nil {
-		return err
-	}
-
-	// 校验并规范化所有用户提供的路径
-	if err := r.validateAndNormalizePaths(); err != nil {
-		return err
-	}
-	return nil
-}
-
-// validatePort 校验端口号
-func (r *Runner) validatePort() error {
+	// --- 校验端口号 ---
 	if r.Config.Port < 1 || r.Config.Port > 65535 {
 		return fmt.Errorf("端口号 %d 无效, 必须在 1-65535 之间", r.Config.Port)
 	}
-	return nil
-}
 
-// validateAndNormalizePaths 校验所有由用户直接提供的路径, 并将它们转换为绝对路径。
-func (r *Runner) validateAndNormalizePaths() error {
 	// --- 校验共享路径 (文件或目录) ---
 	validatedPaths := make([]string, 0, len(r.Config.SharedPaths))
 	for _, path := range r.Config.SharedPaths {
