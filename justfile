@@ -15,10 +15,10 @@ clean:
 
 build:
     @mkdir -p release/
-    @go build -o ./release/rdrop
-    @echo "Build complete -> ./release/rdrop"
+    @go build -o ./release/rd
+    @echo "Build complete -> ./release/rd"
 
 install: build
-    @mv ./release/rdrop ~/go/bin
+    @mv ./release/rd ~/go/bin
     @echo "Installation complete -> ~/go/bin"
     @just clean

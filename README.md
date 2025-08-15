@@ -1,4 +1,4 @@
-# raindrop (rdrop)
+# raindrop (rd)
 
 [English](README.md) | [简体中文](README.zh-CN.md)
 
@@ -20,7 +20,7 @@ Wanna listen?
 - [Spotify](https://open.spotify.com/track/6tlMVCqZlmxfnjZt3OiHjE)
 - [171210 IU Palette Rain Drop (YouTube)](https://youtu.be/xgXFCOoQJVc)
 
-Note: For ease of use, the command-line tool is named `rdrop`. You will need to use `rdrop` to execute commands.
+Note: For ease of use, the command-line tool is named `rd`. You will need to use `rd` to execute commands.
 
 ## 📦 How to Install?
 
@@ -30,14 +30,14 @@ This project provides a [`justfile`](https://github.com/casey/just) to simplify 
 
 ```bash
 just tidy     # Tidy dependencies
-just build    # Build to ./release/rdrop
+just build    # Build to ./release/rd
 ```
 
 ### Method 2: Using Go commands
 
 ```bash
 go mod tidy
-go build -o ./release/rdrop
+go build -o ./release/rd
 ```
 
 ## 🤯 How to Use?
@@ -58,7 +58,7 @@ When raindrop starts, it runs a temporary HTTP server on your device (listening 
 Shares all non-hidden files in the current directory by default.
 
 ```bash
-rdrop
+rd
 ```
 
 **Share specific files**  
@@ -66,35 +66,35 @@ Specify one or more files or directories.
 When sharing a directory, the program will exclude hidden files (those starting with a '.') by default and only share the top-level files within that directory. The contents of subdirectories are not included.
 
 ```bash
-rdrop iu.txt iu.png iu_folder/
+rd iu.txt iu.png iu_folder/
 ```
 
 **Send a message**  
 Send a plain text message using the `-m` or `--message` flag.
 
 ```bash
-rdrop -m "Here is a video link: https://youtu.be/xgXFCOoQJVc"
+rd -m "Here is a video link: https://youtu.be/xgXFCOoQJVc"
 ```
 
 **Send file content**  
 Read the content of a specified file and send it as plain text using the `-c` or `--content-file` flag.
 
 ```bash
-rdrop -c iu_wiki.md
+rd -c iu_wiki.md
 ```
 
 **Specify server port** (default 1130)  
 Specify the server port for the application using the `-p` or `--port` flag.
 
 ```bash
-rdrop -p 1993 -m "Love my IU"
+rd -p 1993 -m "Love my IU"
 ```
 
 **Combine all flags**  
 All flags can be used together to meet more complex needs.
 
 ```bash
-rdrop iu_folder/ -m "Hi! Here is today's IU report" -c iu_wiki.md -p 1993
+rd iu_folder/ -m "Hi! Here is today's IU report" -c iu_wiki.md -p 1993
 ```
 
 ## 🥺 Security Tip

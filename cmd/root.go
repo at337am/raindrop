@@ -22,7 +22,7 @@ func newRootCmd() *cobra.Command {
 	runner := cli.NewRunner()
 
 	var cmd = &cobra.Command{
-		Use:   "rdrop [shared-files...]",
+		Use:   "rd [shared-files...]",
 		Short: "for file and text sharing",
 
 		SilenceUsage: true,
