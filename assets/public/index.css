@@ -94,10 +94,11 @@ h1 span {
 /* ====== 单个共享文件 开始 ======*/
 .file-item {
     display: flex;
-    align-items: center;
+    /* 沿着 交叉轴 把子元素的 文字基线 (baseline) 对齐 */
+    align-items: baseline;
     justify-content: space-between;
 
-    padding: 1rem 1.5rem;
+    padding: 0.5rem 1rem;
     max-width: 80vw;
     margin-bottom: 1rem;
 
@@ -117,6 +118,7 @@ h1 span {
 
 /* 文件名称 */
 .file-name {
+    line-height: 1.6;
     font-size: 2rem;
     /* 确保文本在一行显示, 并隐藏溢出内容 */
     white-space: nowrap;
@@ -127,7 +129,7 @@ h1 span {
 /* 文件大小 */
 .file-size {
     font-size: 1.5rem;
-    margin-left: 1em;
+    margin-left: 1rem;
 
     flex-shrink: 0;
     color: #666;
