@@ -19,6 +19,7 @@ build:
     @echo "Build complete -> ./release/rd"
 
 install: build
+    @mkdir -p ~/go/bin
     @mv ./release/rd ~/go/bin
     @echo "Installation complete -> ~/go/bin"
     @just clean
