@@ -40,11 +40,7 @@ func newRootCmd() *cobra.Command {
 				return err
 			}
 
-			if err := runner.Run(); err != nil {
-				return err
-			}
-
-			return nil
+			return runner.Run()
 		},
 	}
 
